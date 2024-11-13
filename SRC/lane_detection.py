@@ -13,7 +13,6 @@ url = "https://en.wikipedia.org/wiki/Road#/media/File:Erlangen_Bundesautobahn_73
 response = requests.get(url)
 image = np.array(bytearray(response.content), dtype=np.uint8)
 
-#image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 #print(response)
 #print(image)
 
