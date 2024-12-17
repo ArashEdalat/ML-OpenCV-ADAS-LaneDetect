@@ -1,13 +1,13 @@
 # need to install following --> pip install opencv-python-headless numpy matplotlib
 # before running the code
 
-# this code gets in image from the web wikipedia page
-
 import cv2  # OpenCV for computer vision
 import numpy as np
 import matplotlib.pyplot as plt
 import requests
 from io import BytesIO
+
+# get an image from the web wikipedia page
 
 url = "https://en.wikipedia.org/wiki/Road#/media/File:Erlangen_Bundesautobahn_73_Auffahrt_Luftbild-20230422-RM-165734.jpg"
 response = requests.get(url)
@@ -25,8 +25,8 @@ image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB for display
 
 # For video (uncomment to use)
 # video = cv2.VideoCapture('road_video.mp4')
-gray_image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
+gray_image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 blur_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
 
 edges = cv2.Canny(blur_image, threshold1=50, threshold2=150)
@@ -42,11 +42,18 @@ def region_of_interest(img):
         (width // 2, height // 2)
     ]], np.int32)
 
+    # Apply the mask to particular area
+
     cv2.fillPoly(mask, polygon, 255)
     masked_image = cv2.bitwise_and(img, mask)
     return masked_image
 
+    # Process the edges of the interest masked area
+
 cropped_edges = region_of_interest(edges)
+
+    # Detect straight lines within the cropped region of interest using HoughLines transform
+
 lines = cv2.HoughLinesP(cropped_edges, rho=1, theta=np.pi/180, threshold=50,
                         minLineLength=50, maxLineGap=150)
 
